@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --secondary: #4d44db;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-box {
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-box:hover {
+            background-color: rgba(108, 99, 255, 0.05);
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .result-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .prediction {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .confidence {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .normal {
+            color: var(--success);
+        }
+        
+        .sick {
+            color: var(--danger);
+        }
+        
+        .unknown {
+            color: var(--warning);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .file-info {
+            margin-top: 1rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Breast Cancer Detection</h1>
+        
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" accept="image/*" required>
+            <label for="fileInput" class="upload-box">
+                <p>📁 Click to upload a thermogram image</p>
+                <p class="file-info" id="fileName">No file selected</p>
+            </label>
+            <button type="submit" class="btn">Analyze Image</button>
+        </form>
+        
+        {% if prediction %}
+        <div class="result-container">
+            <h2>Analysis Results</h2>
+            {% if img_path %}
+            <img src="{{ url_for('static', filename='uploads/' + img_path.split('/')[-1]) }}" class="result-image" alt="Analyzed Image">
+            {% endif %}
+            <div class="prediction {{ prediction.lower() }}">
+                Result: <strong>{{ prediction }}</strong>
+            </div>
+            <div class="confidence">
+                Confidence: <strong>{{ "%.2f"|format(confidence) }}%</strong>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Show selected filename
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : "No file selected";
+            document.getElementById('fileName').textContent = fileName;
+        });
+    </script>
+</body>
+</html>

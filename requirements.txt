@@ -1,0 +1,6 @@
+flask==2.3.2
+pillow==9.5.0
+numpy==1.24.3
+tensorflow==2.12.0  # or tensorflow-cpu if you don't have GPU
+werkzeug==2.3.6
+gunicorn==20.1.0  # Only needed for deployment
